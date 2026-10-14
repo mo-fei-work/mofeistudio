@@ -79,8 +79,8 @@ src/               站点代码
 
 | 部分 | 许可 | 协议全文 |
 |---|---|---|
-| **代码**（`src/`、配置、样式） | **Apache-2.0** | [`LICENSE`](LICENSE) |
-| **文章**（`content/`） | **CC BY 4.0** | [`LICENSE-CC-BY-4.0.txt`](LICENSE-CC-BY-4.0.txt) |
+| **代码**（`src/`、配置、样式） | **Apache-2.0** | [`LICENSE-APACHE`](LICENSE-APACHE) |
+| **文章**（`content/`） | **CC BY 4.0** | [`LICENSE-CC-BY`](LICENSE-CC-BY) |
 
 代码允许闭源商用，含显式专利授权；文章可转载、可商用、可改编，**必须署名**。
 内容许可的人话摘要见 <https://creativecommons.org/licenses/by/4.0/>。
