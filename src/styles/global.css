@@ -37,10 +37,6 @@
   .prose blockquote {
     @apply my-4 border-l-2 border-neutral-300 pl-4 text-neutral-600 dark:border-neutral-700 dark:text-neutral-400;
   }
-  /* 封面图写在引用块里（`> ![]()`），不要给它加引文的竖线和内边距。 */
-  .prose blockquote:has(> p:only-child > img:only-child) {
-    @apply my-6 border-0 pl-0;
-  }
   .prose pre {
     @apply mb-4 overflow-x-auto rounded-lg bg-neutral-100 p-4 font-mono text-sm dark:bg-neutral-800;
   }
