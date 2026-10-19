@@ -1,0 +1,53 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+type PostEntry = CollectionEntry<"postsZh"> | CollectionEntry<"postsEn">;
+
+interface Props {
+  post: PostEntry;
+  lang: "zh" | "en";
+  latest?: boolean;
+}
+
+const { post, lang, latest = false } = Astro.props;
+
+const typeLabels =
+  lang === "zh"
+    ? {
+        event: "事件 → 教训",
+        judgment: "判断 → 论证",
+        solution: "问题 → 方案",
+      }
+    : {
+        event: "Event → Lesson",
+        judgment: "Judgment → Argument",
+        solution: "Problem → Solution",
+      };
+
+const href = `${lang === "zh" ? "" : "/en"}/posts/${post.id}`;
+const date = new Intl.DateTimeFormat(lang === "zh" ? "sv-SE" : "en-US", {
+  year: "numeric",
+  month: lang === "zh" ? "2-digit" : "short",
+  day: "2-digit",
+  timeZone: "Asia/Shanghai",
+}).format(post.data.date);
+---
+
+<li class="py-5 first:pt-0 last:pb-0">
+  <h3 class="text-base font-medium leading-relaxed">
+    {latest && (
+      <span class="mr-2 inline-block rounded-full border border-orange-700 px-2 py-0.5 text-xs font-normal text-orange-700 dark:border-orange-400 dark:text-orange-400">
+        {lang === "zh" ? "最新" : "Latest"}
+      </span>
+    )}
+    <a class="underline-offset-4 hover:underline" href={href}>
+      {post.data.title}
+    </a>
+  </h3>
+  <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
+    {post.data.summary}
+  </p>
+  <p class="mt-2 text-xs text-neutral-500 dark:text-neutral-400">
+    {date} · {typeLabels[post.data.type]}
+  </p>
+</li>

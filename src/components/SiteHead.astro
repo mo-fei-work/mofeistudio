@@ -1,0 +1,47 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+  lang: "zh" | "en";
+}
+
+const { title, description, lang } = Astro.props;
+const fallbackDescription =
+  lang === "zh"
+    ? "用新工具和文档规范，探索 AI 能力的边界。"
+    : "Use new tools and written specs to explore the boundaries of AI capability.";
+---
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <meta name="description" content={description ?? fallbackDescription} />
+  <meta name="theme-color" content="#ffffff" />
+  <script is:inline>
+    (() => {
+      const root = document.documentElement;
+      let theme;
+
+      try {
+        const saved = localStorage.getItem("theme");
+        if (saved === "light" || saved === "dark") {
+          theme = saved;
+        }
+      } catch {
+        // localStorage 不可用时退回系统偏好。
+      }
+
+      if (!theme) {
+        theme = window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light";
+      }
+
+      root.dataset.theme = theme;
+      document
+        .querySelector('meta[name="theme-color"]')
+        ?.setAttribute("content", theme === "dark" ? "#171717" : "#ffffff");
+    })();
+  </script>
+</head>

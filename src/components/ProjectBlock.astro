@@ -1,0 +1,56 @@
+---
+interface Props {
+  lang: "zh" | "en";
+}
+
+const { lang } = Astro.props;
+
+const content =
+  lang === "zh"
+    ? {
+        heading: "开源项目",
+        description:
+          "一个把项目管理动作全部写进文档的模板仓库，让 DeepSeek Harness 里的 AI 替你管一组项目。",
+        repository:
+          "github.com/fore-thought/deepseek-harness-project-collection-starter",
+        post: "配套长文 →",
+        postHref: "/posts/deepseek-harness-project-collection-management",
+      }
+    : {
+        heading: "Open source",
+        description:
+          "A template repository that writes every management action into documents, so the AI in DeepSeek Harness can run a whole group of projects for you.",
+        repository:
+          "github.com/fore-thought/deepseek-harness-project-collection-starter",
+        post: "Read the accompanying post →",
+        postHref: "/en/posts/deepseek-harness-project-collection-management",
+      };
+
+const linkClass = "underline underline-offset-4";
+---
+
+<section class="mt-12">
+  <h2 class="text-sm font-semibold text-neutral-500 dark:text-neutral-400">
+    {content.heading}
+  </h2>
+  <div class="mt-4">
+    <p class="text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+      {content.description}
+    </p>
+    <p class="mt-3 break-all text-sm">
+      <a
+        class={linkClass}
+        href="https://github.com/fore-thought/deepseek-harness-project-collection-starter"
+        target="_blank"
+        rel="noreferrer"
+      >
+        {content.repository}
+      </a>
+    </p>
+    <p class="mt-1 text-sm">
+      <a class={linkClass} href={content.postHref}>
+        {content.post}
+      </a>
+    </p>
+  </div>
+</section>

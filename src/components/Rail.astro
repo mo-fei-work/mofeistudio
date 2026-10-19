@@ -1,0 +1,98 @@
+---
+import ThemeToggle from "./ThemeToggle.astro";
+
+type RelatedLink = { href: string; title: string };
+
+interface Props {
+  lang: "zh" | "en";
+  altHref: string;
+  related?: RelatedLink[];
+}
+
+const { lang, altHref, related = [] } = Astro.props;
+
+const labels =
+  lang === "zh"
+    ? {
+        language: "语言",
+        theme: "主题",
+        more: "更多",
+        related: "相关",
+        rss: "订阅 RSS",
+        zh: "中文",
+        en: "English",
+      }
+    : {
+        language: "Language",
+        theme: "Theme",
+        more: "More",
+        related: "Related",
+        rss: "RSS",
+        zh: "中文",
+        en: "English",
+      };
+
+const labelClass =
+  "text-xs font-medium tracking-widest text-neutral-400 dark:text-neutral-500";
+const linkClass =
+  "text-neutral-600 underline-offset-4 hover:underline dark:text-neutral-400";
+---
+
+<aside class="w-full shrink-0 border-b border-neutral-200 pb-4 md:sticky md:top-8 md:w-40 md:self-start md:border-b-0 md:border-l md:pb-0 md:pl-6 dark:border-neutral-800">
+  <nav class="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 md:flex-col md:items-stretch md:gap-8">
+    <div class="flex items-center gap-3 md:block">
+      <p class={`${labelClass} md:mb-2`}>{labels.language}</p>
+      <div class="flex items-center gap-3 text-sm">
+        {lang === "zh" ? (
+          <span class="text-neutral-900 dark:text-neutral-100">
+            {labels.zh}
+          </span>
+        ) : (
+          <a class={linkClass} href={altHref}>
+            {labels.zh}
+          </a>
+        )}
+        {lang === "en" ? (
+          <span class="text-neutral-900 dark:text-neutral-100">
+            {labels.en}
+          </span>
+        ) : (
+          <a class={linkClass} href={altHref}>
+            {labels.en}
+          </a>
+        )}
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3 md:block">
+      <p class={`${labelClass} md:mb-2`}>{labels.theme}</p>
+      <ThemeToggle lang={lang} />
+    </div>
+
+    <div class="hidden md:block">
+      <p class={`${labelClass} mb-2`}>{labels.more}</p>
+      <ul class="space-y-2 text-sm">
+        <li>
+          <a class={linkClass} href="/rss.xml">
+            {labels.rss}
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    {related.length > 0 && (
+      <div class="hidden md:block">
+        <p class={`${labelClass} mb-2`}>{labels.related}</p>
+        <ul class="space-y-2 text-sm">
+          {related.map((item) => (
+            <li>
+              <a class={linkClass} href={item.href}>
+                {item.title}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+  </nav>
+</aside>

@@ -1,0 +1,20 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import Hero from "../../components/Hero.astro";
+import PostList from "../../components/PostList.astro";
+import ProjectBlock from "../../components/ProjectBlock.astro";
+
+const posts = await getCollection("postsEn");
+---
+
+<Base
+  lang="en"
+  title="MOFEI STUDIO · MO Fei"
+  description="Use new tools and written specs to explore the boundaries of AI capability."
+  altHref="/"
+>
+  <Hero lang="en" />
+  <PostList posts={posts} lang="en" id="posts" />
+  <ProjectBlock lang="en" />
+</Base>

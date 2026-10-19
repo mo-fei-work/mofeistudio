@@ -1,0 +1,253 @@
+---
+interface Props {
+  lang: "zh" | "en";
+}
+
+const { lang } = Astro.props;
+
+const content =
+  lang === "zh"
+    ? {
+        name: "莫非 · 得无",
+        identity: "一个 AI-Native 的实践者",
+        slogan: "用新工具和文档规范，探索 AI 能力的边界。",
+        follow: "关注我 ·",
+        wechat: {
+          label: "公众号",
+          caption: "微信公众号",
+          alt: "微信公众号二维码",
+        },
+        links: [
+          { label: "GitHub", href: "https://github.com/mo-fei-work" },
+          { label: "B站", href: "https://space.bilibili.com/" },
+          { label: "superlinear", href: "https://www.superlinear.academy/" },
+          {
+            label: "mo-fei-work@foxmail.com",
+            href: "mailto:mo-fei-work@foxmail.com",
+          },
+          { label: "订阅 RSS", href: "/rss.xml" },
+        ],
+        copyright:
+          "© 2026 mofei · 文章 CC BY 4.0 · 本站代码 Apache-2.0 · 正文用 Astro 构建",
+      }
+    : {
+        name: "MO Fei",
+        identity: "An AI-Native practitioner",
+        slogan:
+          "Use new tools and written specs to explore the boundaries of AI capability.",
+        follow: "Follow ·",
+        wechat: {
+          label: "WeChat",
+          caption: "WeChat Official Account",
+          alt: "WeChat Official Account QR code",
+        },
+        links: [
+          { label: "GitHub", href: "https://github.com/mo-fei-work" },
+          { label: "Bilibili", href: "https://space.bilibili.com/" },
+          { label: "superlinear", href: "https://www.superlinear.academy/" },
+          {
+            label: "mo-fei-work@foxmail.com",
+            href: "mailto:mo-fei-work@foxmail.com",
+          },
+          { label: "RSS", href: "/rss.xml" },
+        ],
+        copyright:
+          "© 2026 mofei · Posts CC BY 4.0 · Code Apache-2.0 · Built with Astro",
+      };
+
+const linkClass =
+  "underline-offset-4 hover:text-neutral-900 hover:underline dark:hover:text-neutral-200";
+
+const wechatButtonClass = `${linkClass} cursor-pointer appearance-none border-0 bg-transparent p-0 text-left text-xs text-neutral-500 dark:text-neutral-400`;
+---
+
+<footer class="mt-16 border-t border-neutral-200 pt-8 dark:border-neutral-800">
+  <div class="grid grid-cols-1 gap-y-6 md:grid-cols-2 md:items-start md:gap-x-8 md:gap-y-8">
+    <p class="text-3xl font-bold leading-tight tracking-wider md:col-start-1 md:row-start-1">
+      MOFEI
+      <br />
+      STUDIO
+    </p>
+
+    <div class="md:col-start-2 md:row-start-1 md:text-right">
+      <p class="text-sm font-medium">{content.name}</p>
+      <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
+        {content.identity}
+      </p>
+      <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
+        {content.slogan}
+      </p>
+    </div>
+
+    <p class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-neutral-500 md:col-span-2 md:row-start-2 dark:text-neutral-400">
+      <span>{content.follow}</span>
+      <span class="relative inline-flex" data-wechat>
+        <button
+          type="button"
+          aria-expanded="false"
+          aria-controls="wechat-qr"
+          class={wechatButtonClass}
+          data-wechat-trigger
+        >
+          {content.wechat.label}
+        </button>
+        <span
+          id="wechat-qr"
+          hidden
+          class="absolute bottom-full left-0 z-10 block w-max pb-2"
+          data-wechat-panel
+        >
+          <span class="block rounded border border-neutral-200 bg-white p-2 shadow-lg">
+            <img
+              src="/wechat-qr.jpg"
+              alt={content.wechat.alt}
+              width="430"
+              height="430"
+              class="h-32 w-32"
+            />
+            <span class="mt-1 block text-center text-xs text-neutral-500">
+              {content.wechat.caption}
+            </span>
+          </span>
+        </span>
+      </span>
+      {content.links.map((link) => (
+        <a
+          class={linkClass}
+          href={link.href}
+          target={link.href.startsWith("http") ? "_blank" : undefined}
+          rel={link.href.startsWith("http") ? "noreferrer" : undefined}
+        >
+          {link.label}
+        </a>
+      ))}
+    </p>
+
+    <div class="space-y-2 border-t border-neutral-200 pt-4 md:col-span-2 md:row-start-3 dark:border-neutral-800">
+      <p class="text-xs text-neutral-400 dark:text-neutral-500">
+        {content.copyright}
+      </p>
+
+      <p class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-neutral-500 dark:text-neutral-400">
+        <img
+          src="/beian.png"
+          alt="公安备案"
+          class="h-4 w-auto"
+          width="36"
+          height="40"
+        />
+        <a
+          class={linkClass}
+          href="https://beian.mps.gov.cn/#/query/webSearch?code=11010602203480"
+          rel="noreferrer"
+          target="_blank"
+        >
+          京公网安备11010602203480号
+        </a>
+        <a
+          class={linkClass}
+          href="https://beian.miit.gov.cn/#/Integrated/index"
+          rel="noreferrer"
+          target="_blank"
+        >
+          京ICP备2022024575号-2
+        </a>
+      </p>
+    </div>
+  </div>
+</footer>
+
+<script is:inline>
+  (() => {
+    const ROOT = "[data-wechat]";
+    const TRIGGER = "[data-wechat-trigger]";
+    const PANEL = "[data-wechat-panel]";
+
+    const roots = document.querySelectorAll(ROOT);
+    if (roots.length === 0) return;
+
+    // 判断焦点是不是键盘给的：鼠标/触摸按下后紧接着的 focusin 不算，
+    // 否则「点击展开」会先被 focusin 打开、再被 click 关掉。
+    let pointerFocus = false;
+    document.addEventListener(
+      "pointerdown",
+      () => {
+        pointerFocus = true;
+      },
+      true,
+    );
+    document.addEventListener(
+      "keydown",
+      () => {
+        pointerFocus = false;
+      },
+      true,
+    );
+
+    const setOpen = (root, open) => {
+      const trigger = root.querySelector(TRIGGER);
+      const panel = root.querySelector(PANEL);
+      if (!trigger || !panel) return;
+
+      panel.hidden = !open;
+      trigger.setAttribute("aria-expanded", String(open));
+    };
+
+    const closeAll = (except) => {
+      document.querySelectorAll(ROOT).forEach((root) => {
+        if (root !== except) setOpen(root, false);
+      });
+    };
+
+    // 触屏没有悬停，靠 matchMedia 兜住，「触屏只有点击」。
+    const canHover = () => window.matchMedia("(hover: hover)").matches;
+
+    roots.forEach((root) => {
+      const trigger = root.querySelector(TRIGGER);
+      if (!trigger) return;
+
+      root.addEventListener("mouseenter", () => {
+        if (!canHover()) return;
+        closeAll(root);
+        setOpen(root, true);
+      });
+
+      root.addEventListener("mouseleave", () => {
+        if (!canHover()) return;
+        setOpen(root, false);
+      });
+
+      // 桌面鼠标只用悬停，点击不切换；只有没有悬停能力的设备才靠点击。
+      if (!canHover()) {
+        trigger.addEventListener("click", () => {
+          const panel = root.querySelector(PANEL);
+          const next = Boolean(panel && panel.hidden);
+          closeAll(root);
+          setOpen(root, next);
+        });
+      }
+
+      root.addEventListener("focusin", () => {
+        if (pointerFocus) return;
+        closeAll(root);
+        setOpen(root, true);
+      });
+
+      root.addEventListener("focusout", (event) => {
+        if (root.contains(event.relatedTarget)) return;
+        setOpen(root, false);
+      });
+    });
+
+    document.addEventListener("click", (event) => {
+      const target = event.target;
+      if (target instanceof Element && target.closest(ROOT)) return;
+      closeAll(null);
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape") return;
+      closeAll(null);
+    });
+  })();
+</script>

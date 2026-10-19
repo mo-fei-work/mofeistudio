@@ -1,0 +1,14 @@
+# 正文源文件不交给格式化工具。
+# 理由：marks.md 定的书写规则（术语与西文之间加空格、中文标点不加）
+# 是手写出来的排版，让 prettier 重排会与之打架，而且改的是文章源文件，
+# diff 会变得没法审。
+src/content/
+
+# 构建产物与依赖
+dist/
+.astro/
+node_modules/
+
+# 锁文件不长这样，但避免误格式化
+package-lock.json
+pnpm-lock.yaml

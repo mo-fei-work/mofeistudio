@@ -1,0 +1,29 @@
+---
+import type { CollectionEntry } from "astro:content";
+import PostItem from "./PostItem.astro";
+
+type PostEntry = CollectionEntry<"postsZh"> | CollectionEntry<"postsEn">;
+
+interface Props {
+  posts: PostEntry[];
+  lang: "zh" | "en";
+  id?: string;
+}
+
+const { posts, lang, id } = Astro.props;
+const ordered = [...posts].sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+);
+const heading = lang === "zh" ? "我的文章" : "My posts";
+---
+
+<section class="mt-12" id={id}>
+  <h2 class="text-sm font-semibold text-neutral-500 dark:text-neutral-400">
+    {heading}
+  </h2>
+  <ul class="mt-4 divide-y divide-neutral-200 dark:divide-neutral-800">
+    {ordered.map((post, index) => (
+      <PostItem post={post} lang={lang} latest={index === 0} />
+    ))}
+  </ul>
+</section>

@@ -23,3 +23,14 @@ desktop.ini
 # ---- 日志 ----
 *.log
 npm-debug.log*
+
+# ---- 技术栈：Astro + Vite（2026-10-18 起）----
+node_modules/
+dist/
+.astro/
+
+# ---- 包管理器：本项目只用 pnpm ----
+# 混用会产生两套锁文件和两种 node_modules 结构，之后一定乱。
+# 下面两个锁文件必须排除，不要"顺手"用 npm 或 yarn 装一次。
+package-lock.json
+yarn.lock

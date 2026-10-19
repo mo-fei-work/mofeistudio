@@ -1,0 +1,60 @@
+---
+interface Props {
+  lang: "zh" | "en";
+}
+
+const { lang } = Astro.props;
+
+const content =
+  lang === "zh"
+    ? {
+        slogan: "用新工具和文档规范，探索 AI 能力的边界。",
+        line1: "我是 莫非，你可以叫我 得无",
+        line2: "一个 AI-Native 的实践者",
+        follow: "关注我 · ",
+        links: [
+          { label: "superlinear", href: "https://www.superlinear.academy/" },
+          { label: "B站", href: "https://space.bilibili.com/" },
+          { label: "公众号", href: "#" },
+          { label: "GitHub", href: "https://github.com/mo-fei-work" },
+        ],
+      }
+    : {
+        slogan:
+          "Use new tools and written specs to explore the boundaries of AI capability.",
+        line1: "I'm MO Fei",
+        line2: "An AI-Native practitioner",
+        follow: "Follow · ",
+        links: [
+          { label: "superlinear", href: "https://www.superlinear.academy/" },
+          { label: "Bilibili", href: "https://space.bilibili.com/" },
+          { label: "WeChat", href: "#" },
+          { label: "GitHub", href: "https://github.com/mo-fei-work" },
+        ],
+      };
+
+const linkClass =
+  "underline-offset-4 hover:text-neutral-900 hover:underline dark:hover:text-neutral-200";
+---
+
+<header>
+  <h1 class="text-3xl font-bold tracking-tight">{content.slogan}</h1>
+  <p class="mt-4 text-lg text-neutral-600 dark:text-neutral-400">
+    {content.line1}
+    <br />
+    {content.line2}
+  </p>
+  <p class="mt-6 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-neutral-500 dark:text-neutral-400">
+    <span>{content.follow}</span>
+    {content.links.map((link) => (
+      <a
+        class={linkClass}
+        href={link.href}
+        target={link.href.startsWith("http") ? "_blank" : undefined}
+        rel={link.href.startsWith("http") ? "noreferrer" : undefined}
+      >
+        {link.label}
+      </a>
+    ))}
+  </p>
+</header>

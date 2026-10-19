@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+/* 暗色：显式绑到 data-theme，不用 prefers-color-scheme。
+   出处：Tailwind 官方 docs/dark-mode → Toggling dark mode manually → Using a data attribute
+   决策：../../.agents/decisions/2026-10-18-采用Tailwind默认刻度.md */
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+/* 全站唯一一处「非 Tailwind 默认」的刻度：代码字体。
+   依据：2026-10-17 得无定「代码块要用 JetBrains Mono」，OFL-1.1。
+   除这一行之外不覆盖任何刻度——字号、行高、间距、颜色全部用 Tailwind 默认。 */
+@theme {
+  --font-mono:
+    "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    monospace;
+}
+
+/* 正文排版：只覆盖 Markdown 生成元素。B4 会再精调。 */
+@layer base {
+  .prose {
+    @apply text-sm leading-relaxed text-neutral-800 dark:text-neutral-200;
+  }
+  .prose p {
+    @apply mb-4;
+  }
+  .prose h2 {
+    @apply mt-8 mb-3 text-2xl font-bold tracking-tight;
+  }
+  .prose h3 {
+    @apply mt-6 mb-2 text-lg font-semibold;
+  }
+  .prose ul {
+    @apply mb-4 list-disc pl-5;
+  }
+  .prose ol {
+    @apply mb-4 list-decimal pl-5;
+  }
+  .prose blockquote {
+    @apply my-4 border-l-2 border-neutral-300 pl-4 text-neutral-600 dark:border-neutral-700 dark:text-neutral-400;
+  }
+  /* 封面图写在引用块里（`> ![]()`），不要给它加引文的竖线和内边距。 */
+  .prose blockquote:has(> p:only-child > img:only-child) {
+    @apply my-6 border-0 pl-0;
+  }
+  .prose pre {
+    @apply mb-4 overflow-x-auto rounded-lg bg-neutral-100 p-4 font-mono text-sm dark:bg-neutral-800;
+  }
+  .prose :not(pre) > code {
+    @apply rounded bg-neutral-100 px-1 py-0.5 font-mono text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100;
+  }
+  .prose a {
+    @apply text-neutral-900 underline underline-offset-4 hover:decoration-neutral-900 dark:text-neutral-100 dark:hover:decoration-neutral-200;
+  }
+  .prose img {
+    @apply my-6 rounded-lg;
+  }
+  .prose hr {
+    @apply my-8 border-neutral-200 dark:border-neutral-800;
+  }
+  .prose table {
+    @apply mb-4 w-full border-collapse text-left;
+  }
+  .prose th,
+  .prose td {
+    @apply border-b border-neutral-200 py-2 text-left dark:border-neutral-800;
+  }
+}

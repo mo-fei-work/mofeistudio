@@ -1,0 +1,28 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base
+  lang="zh"
+  title="404 · 页面不存在"
+  description="页面不存在。"
+  altHref="/en/"
+>
+  <section class="py-12">
+    <p class="text-xs tracking-widest text-neutral-400 dark:text-neutral-500">
+      404
+    </p>
+    <h1 class="mt-4 text-3xl font-bold tracking-tight">页面不存在</h1>
+    <p class="mt-3 text-sm text-neutral-600 dark:text-neutral-400">
+      Page not found.
+    </p>
+    <p class="mt-8 flex flex-wrap gap-4 text-sm">
+      <a class="underline underline-offset-4" href="/">
+        ← 返回首页
+      </a>
+      <a class="underline underline-offset-4" href="/en/">
+        ← Back to home
+      </a>
+    </p>
+  </section>
+</Base>
