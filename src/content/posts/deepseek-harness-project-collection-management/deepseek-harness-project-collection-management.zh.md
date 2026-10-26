@@ -44,7 +44,7 @@ related: []
 - **项目规范**：工作区里唯一的根级文档（[AGENTS.md](https://github.com/fore-thought/deepseek-harness-project-collection-starter/blob/main/project-template/AGENTS.md)），管本项目自己的规则和目录索引。它在项目工作区**里面**，agent 有写权限。
 - **组级规范**：工作区**外面**的那一份（[shared-standards/](https://github.com/fore-thought/deepseek-harness-project-collection-starter/tree/main/shared-standards)），管跨项目共用的东西——协作方式、合规要求、工程规范。它对所有项目只读引用。
 - **边界**：项目规范可以覆盖组级规范的默认值，但必须在本项目里显式写出覆盖条款和理由；要改组级规范本身，走提权通道，不能在项目里顺手改。
-- **职责**：组级规范决定「所有项目怎么做才算对」，项目规范决定「这个项目具体怎么做」。
+- **职责**：组级规范决定“所有项目怎么做才算对”，项目规范决定“这个项目具体怎么做”。
 
 这套东西能跑起来，靠的是 DSH 的一个特性：**工作区根目录的** [AGENTS.md](https://github.com/fore-thought/deepseek-harness-project-collection-starter/blob/main/project-template/AGENTS.md) **会在每个会话自动加载**。
 

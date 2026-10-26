@@ -11,13 +11,13 @@ related:
 
 > **About this title**: "Big fat fish" is an internet nickname for DeepSeek itself.
 > A user once fed DeepSeek's own blue whale logo to the model and asked it to identify
-> the image; its reasoning is public, and it studied the logo, concluded from "blue"
-> and "chubby" that this was "a big blue fat fish", and only then realised it was
-> looking at its own logo. The screenshot spread and the nickname stuck; the fandom's
-> anime personification of that logo, the "whale girl", is famous for being greedy and
-> lazy. "Eats for free" is the Chinese phrase for taking the benefits without doing
-> the work. The whole line is self-deprecation: this fish only eats, and spends its
-> days scaring me.
+> the image; its reasoning is public, and it stared at the logo for a long while,
+> concluded from "blue" and "chubby" that this was "a big blue fat fish", and only then
+> realised it was looking at its own logo. The screenshot spread and the nickname stuck;
+> netizens later gave that blue whale an anime girl form, the "whale girl", whose
+> persona is greedy and always slacking off. "Eats for free" is the Chinese phrase for
+> taking the benefits without doing the work. The whole line is self-deprecation: this
+> fish only eats, and spends its days scaring me.
 
 Here is how it happened:
 
@@ -34,7 +34,7 @@ Also, the screenshot above actually shows that my management template gives the 
 
 If you run into a similar situation (fish slices deleted by the whale girl), my open-source project is here: [deepseek-harness-project-collection-starter](https://github.com/fore-thought/deepseek-harness-project-collection-starter) — the best practice for managing a DeepSeek Harness project collection.
 
-> **On "fish slices"**: this one turns on a single Chinese character, "pian", which
+> **On "fish slices" and the "whale girl"**: this one turns on a single Chinese character, "pian", which
 > means both "slice" (as in slices of raw fish) and "film". So "fish slices" also
 > reads as "a fish film" — a film about the whale girl, of the adult kind. Material
 > like that is hard to find and usually kept carefully: it would never be discovered,

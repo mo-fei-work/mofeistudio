@@ -7,7 +7,7 @@ related:
   - deepseek-harness-project-collection-management
 ---
 
-> 受 [He Lu](https://www.superlinear.academy/u/5f38fce1) 的 [用了 agent 反而更忙：聊聊 agent 扩展的不可能三角](https://www.superlinear.academy/c/posts/agent-agent-1c4a59) 这篇 post 启发 
+> 受 [He Lu](https://www.superlinear.academy/u/5f38fce1) 的 [用了 agent 反而更忙：聊聊 agent 扩展的不可能三角](https://www.superlinear.academy/c/posts/agent-agent-1c4a59) 这篇 post 启发
 >
 > 作为软件工程师，我来说一下我对这三者的看法：
 >
