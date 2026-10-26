@@ -15,6 +15,9 @@ interface Props {
   altHref: string;
   related?: { href: string; title: string }[];
   headings?: MarkdownHeading[];
+  noIndex?: boolean;
+  ogType?: "website" | "article";
+  jsonLd?: Record<string, unknown>[];
 }
 
 const {
@@ -24,13 +27,23 @@ const {
   altHref,
   related = [],
   headings = [],
+  noIndex,
+  ogType,
+  jsonLd,
 } = Astro.props;
 const htmlLang = lang === "zh" ? "zh-CN" : "en";
 ---
 
 <!doctype html>
 <html lang={htmlLang}>
-  <SiteHead title={title} description={description} lang={lang} />
+  <SiteHead
+    title={title}
+    description={description}
+    lang={lang}
+    noIndex={noIndex}
+    ogType={ogType}
+    jsonLd={jsonLd}
+  />
   <body class="min-h-screen bg-white text-neutral-900 antialiased dark:bg-neutral-900 dark:text-neutral-200">
     <!-- 冻结顶栏：外层通栏给底色和分隔线，内层再限 896px 版心。
          底色不能只给 896px 的容器，否则视口更宽时栏两侧会漏出滚动正文。 -->

@@ -15,7 +15,16 @@ export default defineConfig({
     locales: ["zh", "en"],
     routing: { prefixDefaultLocale: false },
   },
-  integrations: [sitemap()],
+  integrations: [
+    // sitemap 的 i18n 是另一套配置（和上面顶层 i18n 不共用），locales 的 value
+    // 只能是「字母 + 连字符」的语言属性格式，用来生成 xhtml:link 的 hreflang。
+    sitemap({
+      i18n: {
+        defaultLocale: "zh",
+        locales: { zh: "zh-CN", en: "en-US" },
+      },
+    }),
+  ],
   vite: {
     plugins: [tailwindcss()],
   },

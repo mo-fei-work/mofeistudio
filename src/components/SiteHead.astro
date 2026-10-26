@@ -1,23 +1,118 @@
 ---
+import { getAbsoluteLocaleUrl } from "astro:i18n";
+
 interface Props {
   title: string;
   description?: string;
   lang: "zh" | "en";
+  // 404 这类不该被索引的页面传 true：不出 canonical、hreflang、og:url，另加 robots noindex
+  noIndex?: boolean;
+  ogType?: "website" | "article";
+  // 页面自带的 JSON-LD 节点，会接在 Person 和 WebSite 后面进同一个 @graph
+  jsonLd?: Record<string, unknown>[];
 }
 
-const { title, description, lang } = Astro.props;
+const {
+  title,
+  description,
+  lang,
+  noIndex = false,
+  ogType = "website",
+  jsonLd = [],
+} = Astro.props;
+
 const fallbackDescription =
   lang === "zh"
     ? "用新工具和文档规范，探索 AI 能力的边界。"
     : "Use new tools and written specs to explore the boundaries of AI capability.";
+
+const pageDescription = description ?? fallbackDescription;
+
+// 静态构建里 Astro.url.href 带尾斜杠，和 sitemap 的 <loc> 同形，直接当 canonical 用
+const canonical = Astro.url.href;
+
+// 语言无关路径：去掉 /en 前缀和开头斜杠再喂给 getAbsoluteLocaleUrl。
+// 例：/en/posts/foo/ -> posts/foo/，/posts/foo/ -> posts/foo/，/ -> 空串。
+const localePath = Astro.url.pathname.replace(/^\/en/, "").replace(/^\//, "");
+const zhUrl = getAbsoluteLocaleUrl("zh", localePath);
+const enUrl = getAbsoluteLocaleUrl("en", localePath);
+
+// 裸域名是中文站，所以 x-default 跟中文走
+const hreflangs = [
+  { lang: "zh-CN", href: zhUrl },
+  { lang: "en-US", href: enUrl },
+  { lang: "x-default", href: zhUrl },
+];
+
+// 英文页一律用真名，整页都不能出现「得无」（2026-10-19 定的规则）
+const person =
+  lang === "zh"
+    ? {
+        "@type": "Person",
+        "@id": "https://mofeistudio.cn/#person",
+        name: "莫非",
+        alternateName: ["得无", "MO Fei"],
+        url: "https://mofeistudio.cn/",
+        // 邮箱不放这里：页面里已有，机器可读字段不再重复
+        sameAs: [
+          "https://github.com/mo-fei-work",
+          "https://space.bilibili.com/",
+          "https://www.superlinear.academy/",
+        ],
+      }
+    : {
+        "@type": "Person",
+        "@id": "https://mofeistudio.cn/#person",
+        name: "MO Fei",
+        alternateName: ["mofei"],
+        url: "https://mofeistudio.cn/",
+        sameAs: [
+          "https://github.com/mo-fei-work",
+          "https://space.bilibili.com/",
+          "https://www.superlinear.academy/",
+        ],
+      };
+
+const website = {
+  "@type": "WebSite",
+  "@id": "https://mofeistudio.cn/#website",
+  name: "MOFEI STUDIO",
+  alternateName: "mofeistudio.cn",
+  url: "https://mofeistudio.cn/",
+  inLanguage: ["zh-CN", "en"],
+  author: { "@id": "https://mofeistudio.cn/#person" },
+  description:
+    lang === "zh"
+      ? "用新工具和文档规范，探索 AI 能力的边界。"
+      : "Use new tools and written specs to explore the boundaries of AI capability.",
+};
+
+// set:html 注入序列化后的字符串；用子节点会被 HTML 转义，JSON 就坏了
+const structuredData = JSON.stringify({
+  "@context": "https://schema.org",
+  "@graph": [person, website, ...jsonLd],
+});
 ---
 
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{title}</title>
-  <meta name="description" content={description ?? fallbackDescription} />
+  <meta name="description" content={pageDescription} />
+  {noIndex && <meta name="robots" content="noindex, follow" />}
+  {!noIndex && <link rel="canonical" href={canonical} />}
+  {!noIndex &&
+    hreflangs.map((item) => (
+      <link rel="alternate" hreflang={item.lang} href={item.href} />
+    ))}
+  <meta property="og:type" content={ogType} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={pageDescription} />
+  {!noIndex && <meta property="og:url" content={canonical} />}
+  <meta property="og:site_name" content="MOFEI STUDIO" />
+  <meta property="og:locale" content={lang === "zh" ? "zh_CN" : "en_US"} />
   <meta name="theme-color" content="#ffffff" />
+  <script type="application/ld+json" set:html={structuredData} />
   <script is:inline>
     (() => {
       const root = document.documentElement;

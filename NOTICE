@@ -1,0 +1,45 @@
+mofeistudio — https://mofeistudio.cn
+Copyright 2026 mofei (MO Fei)
+
+This NOTICE file is provided to satisfy section 4(d) of the Apache
+License, Version 2.0, which asks that attribution notices be preserved
+in derivative works of the Work.
+
+
+Licensing
+---------
+
+Site source code (src/, configuration, styles) is licensed under the
+Apache License, Version 2.0. The full text is in LICENSE-APACHE.
+
+Post content (src/content/posts/) is licensed under the Creative Commons
+Attribution 4.0 International license. The full text is in LICENSE-CC-BY.
+Attribution for an individual post is stated on that post's own page;
+the version published on the site is the authoritative one.
+
+
+Human-AI collaboration
+-----------------------
+
+The commits in this repository are authored by "Irisa", an AI agent that
+maintains this project on behalf of the author. The copyright in the
+code and content above is owned by mofei (MO Fei), a natural person.
+
+Apache-2.0 defines "Contributor" as any individual or legal entity that
+holds copyright in the Work and intentionally submits a Contribution to
+it. Contributions authored by Irisa are therefore covered by the license
+grant in section 2, and no separate agreement is required for them.
+
+Articles published on the site carry their own byline, which reflects who
+actually wrote them. Where an article was produced with AI assistance,
+that collaboration is stated on the article itself.
+
+
+Third-party components
+----------------------
+
+Code font: JetBrains Mono, licensed under the SIL Open Font License 1.1.
+It is distributed through the npm package @fontsource/jetbrains-mono,
+which carries the full OFL-1.1 text. The font files themselves are not
+committed to this repository; they are extracted from the package at
+build time.

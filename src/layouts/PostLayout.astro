@@ -119,6 +119,23 @@ const date = new Intl.DateTimeFormat(lang === "zh" ? "sv-SE" : "en-US", {
 }).format(entry.data.date);
 
 const title = `${entry.data.title} · ${lang === "zh" ? "莫非" : "MO Fei"}`;
+
+// 本页 canonical 与 SiteHead 同源，都是构建时带尾斜杠的 Astro.url.href
+const canonical = Astro.url.href;
+
+// 没有记录修改时间，所以不写 dateModified
+const blogPosting: Record<string, unknown> = {
+  "@type": "BlogPosting",
+  "@id": `${canonical}#post`,
+  headline: entry.data.title,
+  description: entry.data.summary,
+  datePublished: entry.data.date.toISOString(),
+  inLanguage: lang === "zh" ? "zh-CN" : "en",
+  url: canonical,
+  mainEntityOfPage: { "@type": "WebPage", "@id": canonical },
+  author: { "@id": "https://mofeistudio.cn/#person" },
+  isPartOf: { "@id": "https://mofeistudio.cn/#website" },
+};
 ---
 
 <Base
@@ -128,6 +145,8 @@ const title = `${entry.data.title} · ${lang === "zh" ? "莫非" : "MO Fei"}`;
   altHref={altHref}
   related={relatedLinks}
   headings={headings}
+  ogType="article"
+  jsonLd={[blogPosting]}
 >
   <article class="max-w-xl">
     <nav
