@@ -60,3 +60,35 @@
     @apply border-b border-neutral-200 py-2 text-left dark:border-neutral-800;
   }
 }
+
+/* 右栏内部滚动条：4px、弱化灰。类名只加在 Rail.astro 的桌面上。
+   Chrome/Safari 走 ::-webkit-scrollbar；Chrome 里一旦同时写 scrollbar-width
+   就会忽略伪元素，所以标准属性只给没有伪元素支持的浏览器（Firefox）。 */
+.rail-scroll::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.rail-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.rail-scroll::-webkit-scrollbar-thumb {
+  border-radius: 9999px;
+  background-color: var(--color-neutral-300);
+}
+
+[data-theme="dark"] .rail-scroll::-webkit-scrollbar-thumb {
+  background-color: var(--color-neutral-700);
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  .rail-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-neutral-300) transparent;
+  }
+
+  [data-theme="dark"] .rail-scroll {
+    scrollbar-color: var(--color-neutral-700) transparent;
+  }
+}

@@ -1,0 +1,63 @@
+---
+// 全站顶部导航行：只管行内排版，不自己管底色、分隔线和吸顶。
+// 通栏底色、1px 分隔线、sticky 都在 Base.astro 的外层容器上。
+import ThemeToggle from "./ThemeToggle.astro";
+
+interface Props {
+  lang: "zh" | "en";
+  altHref: string;
+}
+
+const { lang, altHref } = Astro.props;
+
+// 语言名在两种语言下写法一样；导航的无障碍标签按当前语言取。
+const labels =
+  lang === "zh"
+    ? { zh: "中文", en: "English", navigation: "顶部导航" }
+    : { zh: "中文", en: "English", navigation: "Top navigation" };
+
+const linkClass =
+  "text-neutral-600 underline-offset-4 hover:underline dark:text-neutral-400";
+---
+
+<header class="py-2.5">
+  <nav
+    class="flex items-center justify-between gap-4"
+    aria-label={labels.navigation}
+  >
+    <span class="shrink-0 whitespace-nowrap text-xs font-medium tracking-widest text-neutral-400 dark:text-neutral-500">
+      MOFEI STUDIO
+    </span>
+
+    <div class="flex shrink-0 items-center gap-4 whitespace-nowrap">
+      <div class="flex items-center whitespace-nowrap text-xs">
+        {lang === "zh" ? (
+          <span class="text-neutral-900 dark:text-neutral-100">
+            {labels.zh}
+          </span>
+        ) : (
+          <a class={linkClass} href={altHref}>
+            {labels.zh}
+          </a>
+        )}
+        <span
+          class="px-1.5 text-neutral-300 dark:text-neutral-700"
+          aria-hidden="true"
+        >
+          /
+        </span>
+        {lang === "en" ? (
+          <span class="text-neutral-900 dark:text-neutral-100">
+            {labels.en}
+          </span>
+        ) : (
+          <a class={linkClass} href={altHref}>
+            {labels.en}
+          </a>
+        )}
+      </div>
+
+      <ThemeToggle lang={lang} />
+    </div>
+  </nav>
+</header>

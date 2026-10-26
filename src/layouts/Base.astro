@@ -1,9 +1,12 @@
 ---
 import "../styles/global.css";
 import "@fontsource/jetbrains-mono/400.css";
+import type { MarkdownHeading } from "astro";
 import SiteHead from "../components/SiteHead.astro";
+import TopNav from "../components/TopNav.astro";
 import Rail from "../components/Rail.astro";
 import SiteFooter from "../components/SiteFooter.astro";
+import BackToTop from "../components/BackToTop.astro";
 
 interface Props {
   lang: "zh" | "en";
@@ -11,9 +14,17 @@ interface Props {
   description?: string;
   altHref: string;
   related?: { href: string; title: string }[];
+  headings?: MarkdownHeading[];
 }
 
-const { lang, title, description, altHref, related = [] } = Astro.props;
+const {
+  lang,
+  title,
+  description,
+  altHref,
+  related = [],
+  headings = [],
+} = Astro.props;
 const htmlLang = lang === "zh" ? "zh-CN" : "en";
 ---
 
@@ -21,14 +32,37 @@ const htmlLang = lang === "zh" ? "zh-CN" : "en";
 <html lang={htmlLang}>
   <SiteHead title={title} description={description} lang={lang} />
   <body class="min-h-screen bg-white text-neutral-900 antialiased dark:bg-neutral-900 dark:text-neutral-200">
-    <div class="mx-auto flex min-h-screen max-w-4xl flex-col px-6 py-8 md:py-12">
-      <div class="flex flex-1 flex-col-reverse gap-8 md:flex-row md:gap-12">
+    <!-- 冻结顶栏：外层通栏给底色和分隔线，内层再限 896px 版心。
+         底色不能只给 896px 的容器，否则视口更宽时栏两侧会漏出滚动正文。 -->
+    <div class="sticky top-0 z-40 border-b border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
+      <div class="mx-auto max-w-4xl px-6">
+        <TopNav lang={lang} altHref={altHref} />
+      </div>
+    </div>
+
+    <!-- 顶栏移出容器后，最小高度要扣掉栏高，否则短页也会多出一条滚动。 -->
+    <div class="mx-auto flex min-h-[calc(100vh_-_var(--topbar-h))] max-w-4xl flex-col px-6 py-8 md:py-12">
+      <div class="flex flex-1 flex-col gap-8 md:flex-row md:gap-12">
         <main class="min-w-0 flex-1">
           <slot />
         </main>
-        <Rail lang={lang} altHref={altHref} related={related} />
+        <Rail lang={lang} related={related} headings={headings} />
       </div>
       <SiteFooter lang={lang} />
     </div>
+    <BackToTop lang={lang} />
   </body>
 </html>
+
+<style is:global>
+  /* 顶栏总高：26px 控件 + 上下各 10px（py-2.5）+ 1px 分隔线 = 47px。
+     右栏的吸顶位置和内部滚动上限都读这个变量，改栏高只改这一处。 */
+  :root {
+    --topbar-h: 47px;
+  }
+
+  /* 冻结顶栏会盖住锚点目标，给标题留出「栏高 + 16px」的空隙。 */
+  .prose :is(h2, h3) {
+    scroll-margin-top: calc(var(--topbar-h) + 1rem);
+  }
+</style>

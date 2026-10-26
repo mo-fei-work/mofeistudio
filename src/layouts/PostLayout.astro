@@ -1,4 +1,5 @@
 ---
+import type { MarkdownHeading } from "astro";
 import type { CollectionEntry } from "astro:content";
 import { getCollection } from "astro:content";
 import Base from "./Base.astro";
@@ -8,9 +9,10 @@ type PostEntry = CollectionEntry<"postsZh"> | CollectionEntry<"postsEn">;
 interface Props {
   entry: PostEntry;
   lang: "zh" | "en";
+  headings?: MarkdownHeading[];
 }
 
-const { entry, lang } = Astro.props;
+const { entry, lang, headings = [] } = Astro.props;
 const prefix = lang === "zh" ? "" : "/en";
 const homeHref = lang === "zh" ? "/" : "/en/";
 const postsHref = lang === "zh" ? "/#posts" : "/en/#posts";
@@ -125,6 +127,7 @@ const title = `${entry.data.title} · ${lang === "zh" ? "莫非" : "MO Fei"}`;
   description={entry.data.summary}
   altHref={altHref}
   related={relatedLinks}
+  headings={headings}
 >
   <article class="max-w-xl">
     <nav

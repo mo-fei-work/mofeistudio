@@ -1,0 +1,42 @@
+---
+// 返回顶部：默认隐藏，滚动超过 0.8 个视口高才由脚本显示。
+// z-index 要高于页尾公众号二维码弹层的 z-10。
+interface Props {
+  lang: "zh" | "en";
+}
+
+const { lang } = Astro.props;
+const label = lang === "zh" ? "返回顶部" : "Back to top";
+---
+
+<button
+  type="button"
+  data-back-to-top
+  aria-label={label}
+  title={label}
+  class="fixed right-6 bottom-6 z-20 hidden h-10 w-10 items-center justify-center rounded-full border border-neutral-300 bg-white text-base leading-none text-neutral-500 hover:border-orange-700 hover:text-orange-700 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-400 dark:hover:border-orange-400 dark:hover:text-orange-400"
+>
+  ↑
+</button>
+
+<script is:inline>
+  (() => {
+    const button = document.querySelector("[data-back-to-top]");
+    if (!button) return;
+
+    // 阈值与原型一致：滚动距离 > 0.8 × 视口高。
+    const update = () => {
+      const visible = window.scrollY > window.innerHeight * 0.8;
+      button.classList.toggle("hidden", !visible);
+      button.classList.toggle("flex", visible);
+    };
+
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+
+    button.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  })();
+</script>
