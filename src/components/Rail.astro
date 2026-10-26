@@ -59,13 +59,6 @@ const labelClass =
 const linkClass =
   "text-neutral-600 underline-offset-4 hover:underline dark:text-neutral-400";
 const wechatButtonClass = `${linkClass} cursor-pointer appearance-none border-0 bg-transparent p-0 text-left`;
-
-// 面板高 174px，往上开需要「关注我」上方留出这么多余量，否则会被顶栏或右栏的
-// 滚动容器切掉。目录和相关各一项约 28px、组间距 32px、标签 24px：
-// 上方两项以上（≥ 72px）时余量够，一项都没有或只有一项时就朝下开。
-// 现状：首页与 404 是 0 项（朝下）、大肥鱼篇 1 项（朝下）、三角篇 4 项与 harness 篇 7 项（朝上）。
-const itemsAbove = contents.length + related.length;
-const opensUpward = itemsAbove >= 2;
 ---
 
 <aside class="rail rail-scroll hidden shrink-0 md:sticky md:block md:w-48 md:self-start md:border-l md:pl-6 dark:border-neutral-800">
@@ -134,16 +127,15 @@ const opensUpward = itemsAbove >= 2;
             >
               {labels.wechat.label}
             </button>
-            <!-- 面板默认朝上开（bottom-full）。右栏是滚动容器：overflow-y: auto 会让
-                 overflow-x 也变成 auto，朝下开的面板会被右栏底部裁掉 110px，整个打不开。
-                 页尾的触发器在页面最底部，那边也是 bottom-full，但原因不同：下方没有空间。
-                 「关注我」是第一组时上方没有余量，见上面的 opensUpward。
-                 -left-6 抵掉右栏的 24px 左内边距，否则面板比净宽宽，
-                 会被右栏的 overflow 裁掉；右栏 192px、净宽 167px，面板 146px，放得下。 -->
+            <!-- 面板统一朝上（data-wechat-dir="up"），位置由 Base.astro 的脚本按
+                 触发器在视口里的矩形现算。右栏是 overflow-y: auto 的滚动容器，
+                 absolute 面板一定被它的裁剪盒切掉，所以这里用 fixed：
+                 固定定位的定位基准是视口，不受任何祖先的 overflow 影响。 -->
             <span
               id="rail-wechat-qr"
               hidden
-              class={`absolute z-10 block w-max pt-2 ${opensUpward ? "bottom-full" : "top-full"} -left-6`}
+              class="fixed z-50 block w-max pt-2"
+              data-wechat-dir="up"
               data-wechat-panel
             >
               <span class="block rounded border border-neutral-200 bg-white p-2 shadow-lg">
@@ -200,12 +192,16 @@ const opensUpward = itemsAbove >= 2;
 
 <style>
   /* 冻结顶栏占 0–47px：右栏要吸在「栏高 + 32px」处，否则第一组标签会被栏盖住。
-     内容超出一屏时右栏内部滚，五组全保留。 */
+     内容超出一屏时右栏内部滚，五组全保留。
+     z-index 是给二维码面板用的：position: sticky 会造一个层叠上下文，
+     面板的 z-50 会被关在里面，压不过顶栏的 z-40；右栏本身吸在 79px 以下，
+     抬高层级不会盖到顶栏，只让面板能越出去。 */
   @media (min-width: 48rem) {
     .rail {
       top: calc(var(--topbar-h) + 2rem);
       max-height: calc(100vh - var(--topbar-h) - 2rem);
       overflow-y: auto;
+      z-index: 50;
     }
   }
 </style>

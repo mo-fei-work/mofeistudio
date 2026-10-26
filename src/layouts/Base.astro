@@ -94,6 +94,37 @@ const htmlLang = lang === "zh" ? "zh-CN" : "en";
           true,
         );
 
+        // 三个面板都是 position: fixed（右栏是滚动容器，absolute 会被裁剪盒切掉）。
+        // 固定定位的基准是视口，位置只能按触发器当下的视口矩形现算：
+        // 纵向 up 时面板底边贴触发器顶边、down 时面板顶边贴触发器底边，
+        // 横向左边贴触发器左边；下边与左右各留 8px，上边见下面的说明。
+        const placePanel = (panel, trigger) => {
+          // 先清掉上一次算的位置，重新量。
+          panel.style.top = "";
+          panel.style.left = "";
+          const t = trigger.getBoundingClientRect();
+          const p = panel.getBoundingClientRect();
+          const dir = panel.dataset.wechatDir === "down" ? "down" : "up";
+          const margin = 8;
+
+          let top = dir === "up" ? t.top - p.height : t.bottom;
+          // up 时上边不留 8px 余量，直接贴视口边：首页「关注我」距顶只有 175px，
+          // 面板高 174px，硬留 8px 会把面板压到触发器上、切掉按钮文字。
+          if (top < 0) top = 0;
+          if (top + p.height > window.innerHeight - margin) {
+            top = Math.max(0, window.innerHeight - margin - p.height);
+          }
+
+          let left = t.left;
+          if (left + p.width > window.innerWidth - margin) {
+            left = window.innerWidth - margin - p.width;
+          }
+          if (left < margin) left = margin;
+
+          panel.style.top = `${top}px`;
+          panel.style.left = `${left}px`;
+        };
+
         const setOpen = (root, open) => {
           const trigger = root.querySelector(TRIGGER);
           const panel = root.querySelector(PANEL);
@@ -101,6 +132,8 @@ const htmlLang = lang === "zh" ? "zh-CN" : "en";
 
           panel.hidden = !open;
           trigger.setAttribute("aria-expanded", String(open));
+          // 顺序不能反：先去掉 hidden 才有真实宽高可量，量完再定位。
+          if (open) placePanel(panel, trigger);
         };
 
         const closeAll = (except) => {
@@ -159,6 +192,23 @@ const htmlLang = lang === "zh" ? "zh-CN" : "en";
           if (event.key !== "Escape") return;
           closeAll(null);
         });
+
+        // 面板吃的是视口坐标，触发器却会随页面滚动、右栏内部滚动、窗口缩放移动，
+        // 所以已经打开的面板要跟着重算，而不是关掉。
+        // scroll 不冒泡，用捕获接住右栏这种内部滚动容器的滚动。
+        const reposition = () => {
+          document.querySelectorAll(ROOT).forEach((root) => {
+            const panel = root.querySelector(PANEL);
+            if (!panel || panel.hidden) return;
+            const trigger = root.querySelector(TRIGGER);
+            if (trigger) placePanel(panel, trigger);
+          });
+        };
+        window.addEventListener("scroll", reposition, {
+          passive: true,
+          capture: true,
+        });
+        window.addEventListener("resize", reposition);
       })();
     </script>
   </body>
