@@ -32,6 +32,15 @@ const {
   jsonLd,
 } = Astro.props;
 const htmlLang = lang === "zh" ? "zh-CN" : "en";
+
+// 共享二维码面板的文案：Banner / 右栏 / 页尾三处共用同一个面板，所以文案也由这一处给。
+const wechat =
+  lang === "zh"
+    ? { caption: "微信公众号", alt: "微信公众号二维码" }
+    : {
+        caption: "WeChat Official Account",
+        alt: "WeChat Official Account QR code",
+      };
 ---
 
 <!doctype html>
@@ -65,16 +74,46 @@ const htmlLang = lang === "zh" ? "zh-CN" : "en";
     </div>
     <BackToTop lang={lang} />
 
-    <!-- 公众号二维码弹层：Banner / 右栏 / 页尾三处共用这一套，
-         放在布局末尾，等所有子组件都渲染完再找 [data-wechat]。 -->
+    <!-- 公众号二维码弹层：Banner / 右栏 / 页尾三处共用这一个面板。
+         面板放在 body 层（根层叠上下文），不放进右栏的层叠上下文里：
+         右栏是 position: sticky，会造层叠上下文，面板关在里面就压不过顶栏的 z-40；
+         而把右栏本身抬到顶栏之上，页尾出现时右栏会被 sticky 顶出视口顶部，
+         反而盖住顶栏自己的「中文 / English + 主题按钮」。
+         pt-2 pb-2 是给触发器留的「桥」：朝上时底部 8px、朝下时顶部 8px
+         仍然在面板的盒内，鼠标从触发器移进面板不会脱出。 -->
+    <span
+      id="wechat-qr"
+      hidden
+      class="fixed z-50 block w-max pt-2 pb-2"
+      data-wechat-panel
+    >
+      <span class="block rounded border border-neutral-200 bg-white p-2 shadow-lg">
+        <img
+          src="/wechat-qr.jpg"
+          alt={wechat.alt}
+          width="430"
+          height="430"
+          class="h-32 w-32"
+        />
+        <span class="mt-1 block text-center text-xs text-neutral-500">
+          {wechat.caption}
+        </span>
+      </span>
+    </span>
+
+    <!-- 面板脚本排在面板之后：脚本里直接查 #wechat-qr。 -->
     <script is:inline>
       (() => {
         const ROOT = "[data-wechat]";
         const TRIGGER = "[data-wechat-trigger]";
-        const PANEL = "[data-wechat-panel]";
+        const panel = document.querySelector("#wechat-qr");
+        const roots = Array.from(document.querySelectorAll(ROOT));
+        if (!panel || roots.length === 0) return;
 
-        const roots = document.querySelectorAll(ROOT);
-        if (roots.length === 0) return;
+        // 面板只有一个，同一时刻最多由一个触发器拥有。
+        let activeTrigger = null;
+        // 延迟收起的定时器：面板不在触发器子树里，鼠标移过去要留出时间。
+        let hideTimer = null;
 
         // 判断焦点是不是键盘给的：鼠标/触摸按下后紧接着的 focusin 不算，
         // 否则「点击展开」会先被 focusin 打开、再被 click 关掉。
@@ -94,22 +133,21 @@ const htmlLang = lang === "zh" ? "zh-CN" : "en";
           true,
         );
 
-        // 三个面板都是 position: fixed（右栏是滚动容器，absolute 会被裁剪盒切掉）。
-        // 固定定位的基准是视口，位置只能按触发器当下的视口矩形现算：
-        // 纵向 up 时面板底边贴触发器顶边、down 时面板顶边贴触发器底边，
-        // 横向左边贴触发器左边；下边与左右各留 8px，上边见下面的说明。
+        // 面板是 position: fixed（右栏是滚动容器，absolute 会被裁剪盒切掉）。
+        // 固定定位的基准是视口，位置只能按触发器当下的视口矩形现算。
+        // 方向从触发器上读（data-wechat-dir），三个触发器现在都是 up：
+        // 面板底边贴触发器顶边；横向左边贴触发器左边，右边与左右各留 8px。
         const placePanel = (panel, trigger) => {
           // 先清掉上一次算的位置，重新量。
           panel.style.top = "";
           panel.style.left = "";
           const t = trigger.getBoundingClientRect();
           const p = panel.getBoundingClientRect();
-          const dir = panel.dataset.wechatDir === "down" ? "down" : "up";
+          const dir = trigger.dataset.wechatDir === "down" ? "down" : "up";
           const margin = 8;
 
           let top = dir === "up" ? t.top - p.height : t.bottom;
-          // up 时上边不留 8px 余量，直接贴视口边：首页「关注我」距顶只有 175px，
-          // 面板高 174px，硬留 8px 会把面板压到触发器上、切掉按钮文字。
+          // 上方空间不够时贴视口顶边，宁可少一点缝也不能让面板跑出视口。
           if (top < 0) top = 0;
           if (top + p.height > window.innerHeight - margin) {
             top = Math.max(0, window.innerHeight - margin - p.height);
@@ -125,25 +163,56 @@ const htmlLang = lang === "zh" ? "zh-CN" : "en";
           panel.style.left = `${left}px`;
         };
 
-        const setOpen = (root, open) => {
-          const trigger = root.querySelector(TRIGGER);
-          const panel = root.querySelector(PANEL);
-          if (!trigger || !panel) return;
-
-          panel.hidden = !open;
-          trigger.setAttribute("aria-expanded", String(open));
+        const show = (trigger) => {
+          clearTimeout(hideTimer);
+          if (activeTrigger && activeTrigger !== trigger) {
+            activeTrigger.setAttribute("aria-expanded", "false");
+          }
+          activeTrigger = trigger;
+          trigger.setAttribute("aria-expanded", "true");
           // 顺序不能反：先去掉 hidden 才有真实宽高可量，量完再定位。
-          if (open) placePanel(panel, trigger);
+          panel.hidden = false;
+          placePanel(panel, trigger);
         };
 
+        const hide = () => {
+          clearTimeout(hideTimer);
+          if (activeTrigger) {
+            activeTrigger.setAttribute("aria-expanded", "false");
+            activeTrigger = null;
+          }
+          panel.hidden = true;
+        };
+
+        // 一次只开一个：除 except 这一个 root 外，其余全部标记收起。
         const closeAll = (except) => {
-          document.querySelectorAll(ROOT).forEach((root) => {
-            if (root !== except) setOpen(root, false);
+          roots.forEach((root) => {
+            if (root === except) return;
+            const trigger = root.querySelector(TRIGGER);
+            if (trigger) trigger.setAttribute("aria-expanded", "false");
           });
+          if (activeTrigger && !(except && except.contains(activeTrigger))) {
+            panel.hidden = true;
+            activeTrigger = null;
+          }
         };
 
         // 触屏没有悬停，靠 matchMedia 兜住，「触屏只有点击」。
         const canHover = () => window.matchMedia("(hover: hover)").matches;
+
+        // 共享面板不在触发器的 DOM 子树里，鼠标从触发器移向面板会先触发 mouseleave。
+        // 所以关改成「延迟关」：150ms 后鼠标既不在任何触发器上、也不在面板上，才真的收起。
+        const anyHovered = () =>
+          Array.from(document.querySelectorAll(TRIGGER)).some((trigger) =>
+            trigger.matches(":hover"),
+          ) || panel.matches(":hover");
+
+        const scheduleHide = () => {
+          clearTimeout(hideTimer);
+          hideTimer = setTimeout(() => {
+            if (!anyHovered()) hide();
+          }, 150);
+        };
 
         roots.forEach((root) => {
           const trigger = root.querySelector(TRIGGER);
@@ -152,57 +221,69 @@ const htmlLang = lang === "zh" ? "zh-CN" : "en";
           root.addEventListener("mouseenter", () => {
             if (!canHover()) return;
             closeAll(root);
-            setOpen(root, true);
+            show(trigger);
           });
 
+          // 不是立即关：鼠标可能正从触发器往面板挪。
           root.addEventListener("mouseleave", () => {
             if (!canHover()) return;
-            setOpen(root, false);
+            scheduleHide();
           });
 
           // 桌面鼠标只用悬停，点击不切换；只有没有悬停能力的设备才靠点击。
           if (!canHover()) {
             trigger.addEventListener("click", () => {
-              const panel = root.querySelector(PANEL);
-              const next = Boolean(panel && panel.hidden);
-              closeAll(root);
-              setOpen(root, next);
+              const next = panel.hidden || activeTrigger !== trigger;
+              if (next) {
+                closeAll(root);
+                show(trigger);
+              } else {
+                hide();
+              }
             });
           }
 
           root.addEventListener("focusin", () => {
             if (pointerFocus) return;
             closeAll(root);
-            setOpen(root, true);
+            show(trigger);
           });
 
           root.addEventListener("focusout", (event) => {
             if (root.contains(event.relatedTarget)) return;
-            setOpen(root, false);
+            if (activeTrigger === trigger) hide();
           });
+        });
+
+        // 面板自己也要接住鼠标：进去就取消收起，出来再重新计时。
+        panel.addEventListener("mouseenter", () => {
+          clearTimeout(hideTimer);
+        });
+
+        panel.addEventListener("mouseleave", () => {
+          if (!canHover()) return;
+          scheduleHide();
         });
 
         document.addEventListener("click", (event) => {
           const target = event.target;
-          if (target instanceof Element && target.closest(ROOT)) return;
-          closeAll(null);
+          if (!(target instanceof Element)) return hide();
+          // 面板本身不算「外面」，点它不该收起。
+          if (target.closest(ROOT) || panel.contains(target)) return;
+          hide();
         });
 
         document.addEventListener("keydown", (event) => {
           if (event.key !== "Escape") return;
-          closeAll(null);
+          hide();
         });
 
         // 面板吃的是视口坐标，触发器却会随页面滚动、右栏内部滚动、窗口缩放移动，
         // 所以已经打开的面板要跟着重算，而不是关掉。
         // scroll 不冒泡，用捕获接住右栏这种内部滚动容器的滚动。
         const reposition = () => {
-          document.querySelectorAll(ROOT).forEach((root) => {
-            const panel = root.querySelector(PANEL);
-            if (!panel || panel.hidden) return;
-            const trigger = root.querySelector(TRIGGER);
-            if (trigger) placePanel(panel, trigger);
-          });
+          if (!activeTrigger || panel.hidden) return;
+          placePanel(panel, activeTrigger);
         };
         window.addEventListener("scroll", reposition, {
           passive: true,
