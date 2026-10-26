@@ -12,12 +12,12 @@ const content =
         line1: "我是 莫非，你可以叫我 得无",
         line2: "一个 AI-Native 的实践者",
         follow: "关注我 · ",
-        links: [
-          { label: "superlinear", href: "https://www.superlinear.academy/" },
-          { label: "B站", href: "https://space.bilibili.com/" },
-          { label: "公众号", href: "#" },
-          { label: "GitHub", href: "https://github.com/mo-fei-work" },
-        ],
+        bilibili: "B站",
+        wechat: {
+          label: "公众号",
+          caption: "微信公众号",
+          alt: "微信公众号二维码",
+        },
       }
     : {
         slogan:
@@ -25,16 +25,25 @@ const content =
         line1: "I'm MO Fei",
         line2: "An AI-Native practitioner",
         follow: "Follow · ",
-        links: [
-          { label: "superlinear", href: "https://www.superlinear.academy/" },
-          { label: "Bilibili", href: "https://space.bilibili.com/" },
-          { label: "WeChat", href: "#" },
-          { label: "GitHub", href: "https://github.com/mo-fei-work" },
-        ],
+        bilibili: "Bilibili",
+        wechat: {
+          label: "WeChat",
+          caption: "WeChat Official Account",
+          alt: "WeChat Official Account QR code",
+        },
       };
+
+// 关注行的四个入口，链接两种语言一致，只有 B站 的写法不同。
+const links = {
+  superlinear: "https://www.superlinear.academy/",
+  bilibili: "https://space.bilibili.com/",
+  github: "https://github.com/mo-fei-work",
+};
 
 const linkClass =
   "underline-offset-4 hover:text-neutral-900 hover:underline dark:hover:text-neutral-200";
+// 按钮要和同一行的链接完全一个长相：字号、颜色都跟链接一样，只清掉控件的默认壳。
+const wechatButtonClass = `${linkClass} cursor-pointer appearance-none border-0 bg-transparent p-0 text-left text-xs text-neutral-500 dark:text-neutral-400`;
 ---
 
 <header>
@@ -46,15 +55,51 @@ const linkClass =
   </p>
   <p class="mt-6 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-neutral-500 dark:text-neutral-400">
     <span>{content.follow}</span>
-    {content.links.map((link) => (
-      <a
-        class={linkClass}
-        href={link.href}
-        target={link.href.startsWith("http") ? "_blank" : undefined}
-        rel={link.href.startsWith("http") ? "noreferrer" : undefined}
+    <a
+      class={linkClass}
+      href={links.superlinear}
+      target="_blank"
+      rel="noreferrer"
+    >
+      superlinear
+    </a>
+    <a class={linkClass} href={links.bilibili} target="_blank" rel="noreferrer">
+      {content.bilibili}
+    </a>
+    <span class="relative inline-flex" data-wechat>
+      <button
+        type="button"
+        aria-expanded="false"
+        aria-controls="hero-wechat-qr"
+        class={wechatButtonClass}
+        data-wechat-trigger
       >
-        {link.label}
-      </a>
-    ))}
+        {content.wechat.label}
+      </button>
+      <!-- 面板朝下开（top-full）：Banner 在页面顶部，下方才有空间。
+           -left-6 让面板往左探出 24px，不贴死文字左缘。 -->
+      <span
+        id="hero-wechat-qr"
+        hidden
+        class="absolute top-full -left-6 z-10 block w-max pt-2"
+        data-wechat-panel
+      >
+        <span class="block rounded border border-neutral-200 bg-white p-2 shadow-lg">
+          <img
+            src="/wechat-qr.jpg"
+            alt={content.wechat.alt}
+            width="430"
+            height="430"
+            class="h-32 w-32"
+          />
+          <span class="mt-1 block text-center text-xs text-neutral-500">
+            {content.wechat.caption}
+          </span>
+        </span>
+      </span>
+    </span>
+    <a class={linkClass} href={links.github} target="_blank" rel="noreferrer">
+      GitHub
+    </a>
   </p>
 </header>

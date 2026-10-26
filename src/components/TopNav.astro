@@ -18,6 +18,11 @@ const labels =
 
 const linkClass =
   "text-neutral-600 underline-offset-4 hover:underline dark:text-neutral-400";
+
+// 字标是首页入口，不是链接文字：悬停只加深一档，不加下划线。
+const brandClass =
+  "shrink-0 whitespace-nowrap text-xs font-medium tracking-widest text-neutral-400 hover:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-400";
+const homeHref = lang === "zh" ? "/" : "/en/";
 ---
 
 <header class="py-2.5">
@@ -25,9 +30,9 @@ const linkClass =
     class="flex items-center justify-between gap-4"
     aria-label={labels.navigation}
   >
-    <span class="shrink-0 whitespace-nowrap text-xs font-medium tracking-widest text-neutral-400 dark:text-neutral-500">
+    <a class={brandClass} href={homeHref}>
       MOFEI STUDIO
-    </span>
+    </a>
 
     <div class="flex shrink-0 items-center gap-4 whitespace-nowrap">
       <div class="flex items-center whitespace-nowrap text-xs">
