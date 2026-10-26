@@ -5,28 +5,23 @@ interface Props {
 
 const { lang } = Astro.props;
 
+// 页尾的关注行照右栏分成三组：关注我 / 联系我 / 订阅。
+// 组标签弱化，链接次灰，组与组之间用留白分开，不再用分隔符「·」。
 const content =
   lang === "zh"
     ? {
         name: "莫非 · 得无",
         identity: "一个 AI-Native 的实践者",
         slogan: "用新工具和文档规范，探索 AI 能力的边界。",
-        follow: "关注我 ·",
+        follow: "关注我",
+        contact: "联系我",
+        subscribe: "订阅",
+        bilibili: "B站",
         wechat: {
           label: "公众号",
           caption: "微信公众号",
           alt: "微信公众号二维码",
         },
-        links: [
-          { label: "GitHub", href: "https://github.com/mo-fei-work" },
-          { label: "B站", href: "https://space.bilibili.com/" },
-          { label: "superlinear", href: "https://www.superlinear.academy/" },
-          {
-            label: "mo-fei-work@foxmail.com",
-            href: "mailto:mo-fei-work@foxmail.com",
-          },
-          { label: "订阅 RSS", href: "/rss.xml" },
-        ],
         copyright:
           "© 2026 mofei · 文章 CC BY 4.0 · 本站代码 Apache-2.0 · 正文用 Astro 构建",
       }
@@ -35,22 +30,15 @@ const content =
         identity: "An AI-Native practitioner",
         slogan:
           "Use new tools and written specs to explore the boundaries of AI capability.",
-        follow: "Follow ·",
+        follow: "Follow",
+        contact: "Contact",
+        subscribe: "Subscribe",
+        bilibili: "Bilibili",
         wechat: {
           label: "WeChat",
           caption: "WeChat Official Account",
           alt: "WeChat Official Account QR code",
         },
-        links: [
-          { label: "GitHub", href: "https://github.com/mo-fei-work" },
-          { label: "Bilibili", href: "https://space.bilibili.com/" },
-          { label: "superlinear", href: "https://www.superlinear.academy/" },
-          {
-            label: "mo-fei-work@foxmail.com",
-            href: "mailto:mo-fei-work@foxmail.com",
-          },
-          { label: "RSS", href: "/rss.xml" },
-        ],
         copyright:
           "© 2026 mofei · Posts CC BY 4.0 · Code Apache-2.0 · Built with Astro",
       };
@@ -58,7 +46,11 @@ const content =
 const linkClass =
   "underline-offset-4 hover:text-neutral-900 hover:underline dark:hover:text-neutral-200";
 
-const wechatButtonClass = `${linkClass} cursor-pointer appearance-none border-0 bg-transparent p-0 text-left text-xs text-neutral-500 dark:text-neutral-400`;
+// 组标签和右栏的组标签完全一样：12px / 0.1em 字距 / 500 字重 / 弱灰。
+const labelClass =
+  "text-xs font-medium tracking-widest text-neutral-400 dark:text-neutral-500";
+
+const wechatButtonClass = `${linkClass} cursor-pointer appearance-none border-0 bg-transparent p-0 text-left text-xs`;
 ---
 
 <footer class="mt-16 border-t border-neutral-200 pt-8 pb-20 md:pb-0 dark:border-neutral-800">
@@ -79,31 +71,64 @@ const wechatButtonClass = `${linkClass} cursor-pointer appearance-none border-0 
       </p>
     </div>
 
-    <p class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-neutral-500 md:col-span-2 md:row-start-2 dark:text-neutral-400">
-      <span>{content.follow}</span>
-      <span class="relative inline-flex" data-wechat>
-        <button
-          type="button"
-          aria-expanded="false"
-          aria-controls="wechat-qr"
-          class={wechatButtonClass}
-          data-wechat-dir="up"
-          data-wechat-trigger
-        >
-          {content.wechat.label}
-        </button>
-      </span>
-      {content.links.map((link) => (
+    <!-- 关注行：照右栏分成三组，一行排完。外层用 flex 排组，组内不折行，
+         组与组之间空 24px（gap-x-6）；组标签弱化，链接继承整组的次灰。 -->
+    <div class="flex flex-wrap items-baseline gap-x-6 gap-y-2 text-xs md:col-span-2 md:row-start-2">
+      <div class="flex items-baseline gap-3 whitespace-nowrap text-neutral-600 dark:text-neutral-400">
+        <span class={labelClass}>{content.follow}</span>
         <a
           class={linkClass}
-          href={link.href}
-          target={link.href.startsWith("http") ? "_blank" : undefined}
-          rel={link.href.startsWith("http") ? "noreferrer" : undefined}
+          href="https://www.superlinear.academy/"
+          target="_blank"
+          rel="noreferrer"
         >
-          {link.label}
+          superlinear
         </a>
-      ))}
-    </p>
+        <a
+          class={linkClass}
+          href="https://space.bilibili.com/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          {content.bilibili}
+        </a>
+        <span class="relative inline-flex" data-wechat>
+          <button
+            type="button"
+            aria-expanded="false"
+            aria-controls="wechat-qr"
+            class={wechatButtonClass}
+            data-wechat-dir="up"
+            data-wechat-trigger
+          >
+            {content.wechat.label}
+          </button>
+        </span>
+        <a
+          class={linkClass}
+          href="https://github.com/mo-fei-work"
+          target="_blank"
+          rel="noreferrer"
+        >
+          GitHub
+        </a>
+      </div>
+
+      <!-- 邮箱整组不折行，靠组上的 whitespace-nowrap 兜住。 -->
+      <div class="flex items-baseline gap-3 whitespace-nowrap text-neutral-600 dark:text-neutral-400">
+        <span class={labelClass}>{content.contact}</span>
+        <a class={linkClass} href="mailto:mo-fei-work@foxmail.com">
+          mo-fei-work@foxmail.com
+        </a>
+      </div>
+
+      <div class="flex items-baseline gap-3 whitespace-nowrap text-neutral-600 dark:text-neutral-400">
+        <span class={labelClass}>{content.subscribe}</span>
+        <a class={linkClass} href="/rss.xml">
+          RSS
+        </a>
+      </div>
+    </div>
 
     <div class="space-y-2 border-t border-neutral-200 pt-4 md:col-span-2 md:row-start-3 dark:border-neutral-800">
       <p class="text-xs text-neutral-400 dark:text-neutral-500">

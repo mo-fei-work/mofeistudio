@@ -20,8 +20,12 @@ const linkClass =
   "text-neutral-600 underline-offset-4 hover:underline dark:text-neutral-400";
 
 // 字标是首页入口，不是链接文字：悬停只加深一档，不加下划线。
+// 字号、字距、加粗和页尾那个 MOFEI STUDIO 字标同一套（20px / 0.05em / 700），
+// 只降一档成次灰，并且必须保持单行，所以留着 whitespace-nowrap 与 shrink-0。
+// 窄屏降一档到 18px：英文页右侧的 Light/Dark 比中文的亮/暗宽 27px，
+// 20px 字标在 390px 下会把右边距挤到 8px；md（768px）以上仍是 20px。
 const brandClass =
-  "shrink-0 whitespace-nowrap text-xs font-medium tracking-widest text-neutral-400 hover:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-400";
+  "shrink-0 whitespace-nowrap text-lg font-bold tracking-wider text-neutral-600 hover:text-neutral-900 md:text-xl dark:text-neutral-400 dark:hover:text-neutral-100";
 const homeHref = lang === "zh" ? "/" : "/en/";
 ---
 

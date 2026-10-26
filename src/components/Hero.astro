@@ -11,7 +11,7 @@ const content =
         slogan: "用新工具和文档规范，探索 AI 能力的边界。",
         line1: "我是 莫非，你可以叫我 得无",
         line2: "一个 AI-Native 的实践者",
-        follow: "关注我 · ",
+        follow: "关注我",
         bilibili: "B站",
         wechat: {
           label: "公众号",
@@ -24,7 +24,7 @@ const content =
           "Use new tools and written specs to explore the boundaries of AI capability.",
         line1: "I'm MO Fei",
         line2: "An AI-Native practitioner",
-        follow: "Follow · ",
+        follow: "Follow",
         bilibili: "Bilibili",
         wechat: {
           label: "WeChat",
@@ -42,8 +42,13 @@ const links = {
 
 const linkClass =
   "underline-offset-4 hover:text-neutral-900 hover:underline dark:hover:text-neutral-200";
-// 按钮要和同一行的链接完全一个长相：字号、颜色都跟链接一样，只清掉控件的默认壳。
-const wechatButtonClass = `${linkClass} cursor-pointer appearance-none border-0 bg-transparent p-0 text-left text-xs text-neutral-500 dark:text-neutral-400`;
+// 组标签和右栏的组标签同一套：12px / 0.1em 字距 / 500 字重 / 弱灰，
+// 靠字距和颜色退到链接后面，不再用分隔符「·」。
+const labelClass =
+  "font-medium tracking-widest text-neutral-400 dark:text-neutral-500";
+// 按钮要和同一行的链接完全一个长相：字号、颜色都跟链接一样（继承整行的次灰），
+// 只清掉控件的默认壳。
+const wechatButtonClass = `${linkClass} cursor-pointer appearance-none border-0 bg-transparent p-0 text-left text-xs`;
 ---
 
 <header>
@@ -53,8 +58,8 @@ const wechatButtonClass = `${linkClass} cursor-pointer appearance-none border-0 
     <br />
     {content.line2}
   </p>
-  <p class="mt-6 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-neutral-500 dark:text-neutral-400">
-    <span>{content.follow}</span>
+  <p class="mt-6 flex flex-wrap items-baseline gap-x-3 gap-y-1 text-xs text-neutral-600 dark:text-neutral-400">
+    <span class={labelClass}>{content.follow}</span>
     <a
       class={linkClass}
       href={links.superlinear}
