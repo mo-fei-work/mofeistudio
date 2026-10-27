@@ -20,7 +20,7 @@ related:
 
 ![一桩如实报告的事故](/posts/deepseek-dangerous-operations/images/incident.png)
 
-得亏有我的一堆 markdown 文档（[如何更好地管理项目？不管理！——我的 DeepSeek Harness 项目组管理模板，开源了](/posts/deepseek-harness-project-collection-management)）进行自动约束，不然暴毙了。
+得亏有我的一堆 markdown 文档（[如何更好地管理项目？不管理！——我的 DeepSeek Harness 项目组管理模板，开源了](/posts/deepseek-harness-project-collection-management/)）进行自动约束，不然暴毙了。
 
 > **关于“暴毙”**：网络用语，指一下子彻底完蛋。
 

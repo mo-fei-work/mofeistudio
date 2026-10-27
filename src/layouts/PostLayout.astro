@@ -16,7 +16,8 @@ const { entry, lang, headings = [] } = Astro.props;
 const prefix = lang === "zh" ? "" : "/en";
 const homeHref = lang === "zh" ? "/" : "/en/";
 const postsHref = lang === "zh" ? "/#posts" : "/en/#posts";
-const altHref = lang === "zh" ? `/en/posts/${entry.id}` : `/posts/${entry.id}`;
+const altHref =
+  lang === "zh" ? `/en/posts/${entry.id}/` : `/posts/${entry.id}/`;
 
 const allZh = await getCollection("postsZh");
 const allEn = await getCollection("postsEn");
@@ -35,7 +36,7 @@ for (const slug of entry.data.related) {
   const match = siblings.find((post) => post.id === slug);
   if (match) {
     relatedLinks.push({
-      href: `${prefix}/posts/${match.id}`,
+      href: `${prefix}/posts/${match.id}/`,
       title: match.data.title,
     });
   }
@@ -222,7 +223,7 @@ const blogPosting: Record<string, unknown> = {
             </p>
             <a
               class="mt-1 block text-sm underline-offset-4 hover:underline"
-              href={`${prefix}/posts/${previous.id}`}
+              href={`${prefix}/posts/${previous.id}/`}
             >
               {previous.data.title}
             </a>
@@ -235,7 +236,7 @@ const blogPosting: Record<string, unknown> = {
             </p>
             <a
               class="mt-1 block text-sm underline-offset-4 hover:underline"
-              href={`${prefix}/posts/${next.id}`}
+              href={`${prefix}/posts/${next.id}/`}
             >
               {next.data.title}
             </a>

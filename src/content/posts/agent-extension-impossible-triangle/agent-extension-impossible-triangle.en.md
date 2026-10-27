@@ -35,7 +35,7 @@ How to load on demand? If the context of the session's main model is ample (far 
 
 Worried the main model does not grasp the details of all the existing spec knowledge? Let the main model open a sub-agent to handle the detail — the sub-agent's context is always enough, isn't it?
 
-Parts 1 and 2 can be read in my earlier article [How to manage projects better? Don't manage them! — My DeepSeek Harness project-collection management template is now open source](/en/posts/deepseek-harness-project-collection-management)
+Parts 1 and 2 can be read in my earlier article [How to manage projects better? Don't manage them! — My DeepSeek Harness project-collection management template is now open source](/en/posts/deepseek-harness-project-collection-management/)
 
 ## 3. Low parallelism (fewer agents, simpler management)
 

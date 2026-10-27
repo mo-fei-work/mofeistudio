@@ -34,7 +34,7 @@ related:
 
 担心主模型对已有各种 spec 的知识把握细节不够？细节让主模型开子 agent 完成，子 agent 的上下文总够吧！
 
-1 和 2 两部分可以参考我之前的文章 [如何更好地管理项目？不管理！——我的 DeepSeek Harness 项目组管理模板，开源了](/posts/deepseek-harness-project-collection-management)
+1 和 2 两部分可以参考我之前的文章 [如何更好地管理项目？不管理！——我的 DeepSeek Harness 项目组管理模板，开源了](/posts/deepseek-harness-project-collection-management/)
 
 ## 3. 低并行度（agent 少，管理简单）
 

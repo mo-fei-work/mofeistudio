@@ -23,7 +23,7 @@ Here is how it happened:
 
 ![An incident, reported as it happened](/posts/deepseek-dangerous-operations/images/incident.png)
 
-Thankfully a pile of markdown documents of mine ([How to manage projects better? Don't manage them! — My DeepSeek Harness project-collection management template is now open source](/en/posts/deepseek-harness-project-collection-management)) were constraining it automatically, otherwise it would have been instant death.
+Thankfully a pile of markdown documents of mine ([How to manage projects better? Don't manage them! — My DeepSeek Harness project-collection management template is now open source](/en/posts/deepseek-harness-project-collection-management/)) were constraining it automatically, otherwise it would have been instant death.
 
 > **On "instant death"**: Chinese net slang for something that dies all at once.
 
