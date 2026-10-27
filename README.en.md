@@ -103,7 +103,8 @@ pnpm exec astro preview --port 4321     # preview the built site
 - **Three articles** are published, in Chinese and English
 - Dark mode, top navigation, table of contents and back-to-top have all been
   verified in a real browser
-- **Not live yet** (deployment target: the existing Aliyun server + nginx)
+- **Live**: <https://mofeistudio.cn> (one canonical trailing-slash form, real 404
+  status codes, no broken internal links, all four Chinese/English URL shapes work)
 
 ## License
 
